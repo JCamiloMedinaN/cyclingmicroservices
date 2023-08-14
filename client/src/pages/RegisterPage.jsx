@@ -57,7 +57,7 @@ function RegisterPage() {
                 </p>
             </div>
         </div >
-       
+
     )
 }
 
