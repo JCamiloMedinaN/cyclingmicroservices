@@ -56,13 +56,14 @@ export const AuthProvider = ({ children }) => {
             
             if (!cookies.token) {
                 setIsAuthenticated(false);
+                setLoading(false)
                 return setUser(null)
             }
 
             try {
                 const res = await verifyTokenRequest(cookies.token);
                 if (!res.data) {
-                    setIsAuthenticated(true)
+                    setIsAuthenticated(false)
                     setLoading(false)
                     return
                 }
