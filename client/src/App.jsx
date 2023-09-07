@@ -9,11 +9,16 @@ import HomePage from './pages/HomePage'
 import CreateProductPage from './pages/CreateProductPage'
 
 import ProtectedRoute from './ProtectedRoute'
+import Navbar from './components/Navbar'
+import ShoppinCartPage from './pages/ShoppinCartPage'
+import EditProductPage from './pages/EditProductPage'
+import CreateCategoryPage from './pages/CreateCategoryPage'
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <Navbar/>
         <Routes>
           <Route path='/' element={<HomePage />} />
           <Route path='/login' element={<LoginPage />} />
@@ -22,7 +27,10 @@ function App() {
 
           <Route element={<ProtectedRoute/>}>
             <Route path='/profile' element={<ProfilePage />} />
+            <Route path='/shoppingcart' element={<ShoppinCartPage />} />
             <Route path='/createproduct' element={<CreateProductPage />} />
+            <Route path='/createcategory' element={<CreateCategoryPage />} />
+            <Route path='/editproduct' element={<EditProductPage />} />
           </Route>
         </Routes>
       </BrowserRouter>

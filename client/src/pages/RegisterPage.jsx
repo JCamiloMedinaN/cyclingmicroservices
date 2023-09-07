@@ -27,6 +27,8 @@ function RegisterPage() {
                         </div>
                     ))
                 }
+
+                <h1 className='text-2xl font-bold'>Registrarme</h1>
                 <form onSubmit={onSubmit}>
                     <input type="text" {...register('username', { required: true })}
                         className='w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2'
