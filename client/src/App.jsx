@@ -14,6 +14,7 @@ import ShoppinCartPage from './pages/ShoppinCartPage'
 import EditProductPage from './pages/EditProductPage'
 import CreateCategoryPage from './pages/CreateCategoryPage'
 
+
 function App() {
   return (
     <AuthProvider>

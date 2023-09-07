@@ -6,6 +6,14 @@ export default {
   ],
   theme: {
     extend: {},
+    colors: {
+      // Configure your color palette here
+      'color-primary':'rgb(255,255,255)',
+      'color-secondary': 'rgb(0,28,48)',
+      'color-third': 'rgb(23,107,135)',
+      'color-error': 'rgb(190,0,10)'
+
+    }
   },
   plugins: [],
 }
