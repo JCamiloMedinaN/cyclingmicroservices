@@ -33,7 +33,8 @@ export const register = async (req, res) => {
             username: userSaved.username,
             email: userSaved.email,
             createdAt: userSaved.createdAt,
-            updateAt: userSaved.updatedAt
+            updateAt: userSaved.updatedAt,
+            is_admin: userSaved.is_admin
         })
 
     } catch (error) {
@@ -69,7 +70,51 @@ export const login = async (req, res) => {
             username: userFound.username,
             email: userFound.email,
             createdAt: userFound.createdAt,
-            updateAt: userFound.updatedAt
+            updateAt: userFound.updatedAt,
+            is_admin: userFound.is_admin
+        })
+
+    } catch (error) {
+        res.status(500).json({ message: error.message })
+    }
+}
+
+export const loginadmin = async (req, res) => {
+    const { email, password } = req.body
+
+    try {
+        const userFound = await User.findOne({ email })
+        if (!userFound) return res.status(400).json({
+            message:
+                'Usuario no encontrado'
+        })
+
+        const isMatch = await bcrypt.compare(password, userFound.password)
+        if (!isMatch) return res.status(400).json({
+            message:
+                'Contraseña incorrecta'
+        })
+
+        const isAdmin = userFound.is_admin
+        if (!isAdmin) return res.status(401).json({
+            message:
+                'No tienes permisos para acceder a esta ruta'
+        })
+
+        const token = await createAccessToken({ id: userFound._id })
+
+        res.cookie('token', token, {
+            sameSite: 'none',
+            secure: true,
+            httpOnly: true
+        })
+        res.json({
+            id: userFound._id,
+            username: userFound.username,
+            email: userFound.email,
+            createdAt: userFound.createdAt,
+            updateAt: userFound.updatedAt,
+            is_admin: userFound.is_admin
         })
 
     } catch (error) {
