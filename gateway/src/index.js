@@ -1,28 +1,21 @@
 import express from 'express'
-import cors from 'cors'
+import cookieParser from 'cookie-parser'
 import { createProxyMiddleware } from 'http-proxy-middleware'
 
 const app = express()
-app.use(cors())
+app.use(cookieParser())
 app.use(express.json())
 
-app.listen(4000, () => {
-    console.log('Gateway esta escuchando por el puerto', 4000)
-})
+app.use('/', createProxyMiddleware({
+  target: 'http://localhost:4001/',
+  changeOrigin: true,
+  onProxyReq(proxyReq) {
+    proxyReq.end()
+  }
+}))
 
-app.use('/', (req, res) => {
-	const requestData = req.body
-	createProxyMiddleware({
-			target: 'http://localhost:4001/',
-			changeOrigin: true,
-			onProxyReq(proxyReq) {
-					if (requestData) {
-							proxyReq.setHeader('content-type', 'application/json')
-							proxyReq.write(JSON.stringify(requestData))
-							proxyReq.end()
-					}
-			}
-	})(req, res)
+app.listen(4000, () => {
+  console.log('Gateway Server on port', 4000)
 })
 
 // app.use('/api/', proxy('http://localhost:4002')) //products
