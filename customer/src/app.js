@@ -21,22 +21,21 @@ const app = express()
 //     res.header(`Access-Control-Allow-Origin`, `http://localhost:5173/`)
 //     next()
 // }
-app.use(cors({
-    origin: '*',
-    credentials: true,
-}))
 // app.use(cors({
-//     origin:'http://localhost:5173/',
-//     credentials: true
+//     origin: '*',
+//     credentials: true,
 // }))
+app.use(cors({
+    origin:['http://localhost:5173/'],
+    credentials: true,
+    exposeHeaders: ['Authorization'],
+}))
 
 app.use(morgan('dev'))
 app.use(express.json())
 app.use(cookieParser())
 
 app.use('/api', authRoutes);
-
-
 
 export default app
 
