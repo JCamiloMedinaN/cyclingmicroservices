@@ -20,7 +20,8 @@ export const AuthProvider = ({ children }) => {
     const signup = async (user) => {
         try {
             const res = await registerRequest(user)
-            console.log(res.data)
+            console.log("Datos enviados al registrar un usuario:", user); // Agregar esta línea para mostrar los datos enviados
+            console.log("Respuesta del servidor al registrar un usuario:", res.data); // Mostrar la respuesta del servidor
             setUser(res.data)
             setIsAuthenticated(true)
             setIsAdmin(res.data.is_admin)
