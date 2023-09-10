@@ -20,13 +20,21 @@ function RegisterPage() {
     return (
         <div className='flex h-[calc(100vh-100px)] items-center justify-center'>
             <div className='border border-black max-w-md w-full p-10 rounded-md'>
-                {
+                {/* {
                     registerErrors.map((error, i) => (
                         <div className='bg-color-error p-0.5 my-2 text-color-primary text-center rounded-md' key={i}>
                             {error}
                         </div>
                     ))
+                } */}
+                {
+                    Array.isArray(registerErrors) && registerErrors.map((error, i) => (
+                        <div className='bg-color-error p-0.5 my-2 text-color-primary text-center rounded-md' key={i}>
+                            {error}
+                        </div>
+                    ))
                 }
+
 
                 <h1 className='text-2xl font-bold'>Registrarme</h1>
                 <form onSubmit={onSubmit}>
