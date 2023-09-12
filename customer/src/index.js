@@ -3,6 +3,7 @@ import { connectDB } from './db.js'
 
 connectDB()
 
-app.listen(4001, () => {
+const PORT = process.env.PORT || 4001
+app.listen(PORT, () => {
   console.log('Customer Server on port', 4001)
 })
