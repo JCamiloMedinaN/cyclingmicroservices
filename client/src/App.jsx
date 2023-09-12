@@ -17,29 +17,29 @@ import CreateCategoryPage from './pages/CreateCategoryPage'
 
 function App() {
 
-	const { isAdmin } = useAuth()
-    
+  const { isAdmin } = useAuth()
+
   return (
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/loginadmin' element={<AdminLoginPage />} />
-          <Route path='/register' element={<RegisterPage />} />
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/loginadmin' element={<AdminLoginPage />} />
+        <Route path='/register' element={<RegisterPage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path='/profile' element={<ProfilePage />} />
+        <Route element={<ProtectedRoute />}>
+          <Route path='/profile' element={<ProfilePage />} />
 
-            <Route path='/shoppingcart' element={<ShoppingCartPage />} />
-            <Route path='/createproduct' element={isAdmin ? <CreateProductPage /> : <Navigate to='/' />} />
-            <Route path='/createcategory' element={isAdmin ? <CreateCategoryPage /> : <Navigate to='/' />} />
-            <Route path='/editproduct' element={isAdmin ? <EditProductPage /> : <Navigate to='/' />} />
-          </Route>
+          <Route path='/shoppingcart' element={<ShoppingCartPage />} />
+          <Route path='/createproduct' element={isAdmin ? <CreateProductPage /> : <Navigate to='/' />} />
+          <Route path='/createcategory' element={isAdmin ? <CreateCategoryPage /> : <Navigate to='/' />} />
+          <Route path='/editproduct' element={isAdmin ? <EditProductPage /> : <Navigate to='/' />} />
+        </Route>
 
-          <Route path='*' element={<RedirectToHomePage />} />
-        </Routes>
-      </BrowserRouter>
+        <Route path='*' element={<RedirectToHomePage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

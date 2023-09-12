@@ -46,9 +46,9 @@ export const AuthProvider = ({ children }) => {
 	const signinadmin = async (user) => {
 		try {
 			const res = await loginAdminRequest(user)
-				setIsAuthenticated(true)
-				setUser(res.data)
-				setIsAdmin(res.data.is_admin)
+			setIsAuthenticated(true)
+			setUser(res.data)
+			setIsAdmin(res.data.is_admin)
 		} catch (error) {
 			if (Array.isArray(error.response.data)) {
 				return setErrors(error.response.data)
@@ -57,16 +57,16 @@ export const AuthProvider = ({ children }) => {
 		}
 	}
 
-  const handleLogout = async () => {
-    try {
-      await logout()
-      setIsAuthenticated(false)
-      setUser(null)
+	const handleLogout = async () => {
+		try {
+			await logout()
+			setIsAuthenticated(false)
+			setUser(null)
 			window.location.href = '/login'
-    } catch (error) {
-      console.error('Logout error:', error)
-    }
-  }
+		} catch (error) {
+			console.error('Logout error:', error)
+		}
+	}
 
 	useEffect(() => {
 		if (errors.length > 0) {
@@ -77,33 +77,33 @@ export const AuthProvider = ({ children }) => {
 		}
 	}, [errors])
 
-  const checkLogin = async () => {
-    const cookies = Cookies.get()
-			try {
-				const res = await verifyTokenRequest(cookies.token)
-				if (!res.data) {
-					setIsAuthenticated(false)
-					setLoading(false)
-					return
-				}
-				setIsAuthenticated(true)
-				setUser(res.data)
-				setIsAdmin(res.data.is_admin)
-				setLoading(false)
-			} catch (error) {
+	const checkLogin = async () => {
+		const cookies = Cookies.get()
+		try {
+			const res = await verifyTokenRequest(cookies.token)
+			if (!res.data) {
 				setIsAuthenticated(false)
-				setUser(null)
 				setLoading(false)
+				return
 			}
+			setIsAuthenticated(true)
+			setUser(res.data)
+			setIsAdmin(res.data.is_admin)
+			setLoading(false)
+		} catch (error) {
+			setIsAuthenticated(false)
+			setUser(null)
+			setLoading(false)
+		}
 	}
 
-  useEffect(() => {
+	useEffect(() => {
+		checkLogin()
+		const interval = setInterval(() => {
 			checkLogin()
-			const interval = setInterval(() => {
-				checkLogin()
-			}, 10000000)
-			return () => clearInterval(interval)
-  }, [])
+		}, 10000000)
+		return () => clearInterval(interval)
+	}, [])
 
 	return <AuthContext.Provider value={{
 		signup,

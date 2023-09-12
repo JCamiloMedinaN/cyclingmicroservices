@@ -17,7 +17,7 @@ function LoginPage() {
   })
 
   if (loading) return <h1>loading...</h1>
-  
+
   return (
     <div className=' flex h-[calc(100vh-100px)] items-center justify-center'>
       <div className='border border-black max-w-md w-full p-10 rounded-md'>

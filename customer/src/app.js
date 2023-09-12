@@ -21,10 +21,6 @@ app.use(express.json())
 //   next()
 // })
 
-
-app.use(morgan('dev'))
-
-
 app.use('/api', authRoutes)
 
 export default app
