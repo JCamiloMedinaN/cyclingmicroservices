@@ -82,7 +82,7 @@ export const login = async (req, res) => {
                 createdAt: userFound.createdAt,
                 updateAt: userFound.updatedAt,
                 is_admin: userFound.is_admin,
-                // token: token,
+                token: token,
                 // expiresIn: expiresIn      
             })
         }
@@ -154,32 +154,71 @@ export const profile = async (req, res) => {
     res.send('profile')
 }
 
+// export const verifyToken = async (req, res) => {
+//     const { token } = req.cookies
+//     if (!token) return res.status(401).json({
+//         message:
+//             'Token no proporcionado'
+//     })
+
+//     jwt.verify(token, TOKEN_SECRET, async (error, user) => {
+//         if (error) return res.status(401).json({
+//             message:
+//                 'Token inválido o expirado'
+//         })
+
+//         const userFound = await User.findById(user.id)
+//         if (!userFound) return res.status(401).json({
+//             message:
+//                 'Usuario no encontrado'
+//         })
+
+//         return res.json({
+//             id: userFound._id,
+//             username: userFound.username,
+//             email: userFound.email,
+//             is_admin: userFound.is_admin
+//         })
+//     })
+// }
 export const verifyToken = async (req, res) => {
-    const { token } = req.cookies
-    if (!token) return res.status(401).json({
-        message:
-            'Token no proporcionado'
-    })
+    const { token } = req.cookies;
 
-    jwt.verify(token, TOKEN_SECRET, async (error, user) => {
-        if (error) return res.status(401).json({
-            message:
-                'Token inválido o expirado'
-        })
+    try {
+        if (!token) {
+            return res.status(401).json({
+                message: 'Token no proporcionado'
+            });
+        }
 
-        const userFound = await User.findById(user.id)
-        if (!userFound) return res.status(401).json({
-            message:
-                'Usuario no encontrado'
-        })
+        jwt.verify(token, TOKEN_SECRET, (error, user) => {
+            if (error) {
+                if (error.name === 'TokenExpiredError') {
+                    return res.status(401).json({
+                        message: 'Token expirado'
+                    });
+                } else if (error.name === 'JsonWebTokenError') {
+                    return res.status(401).json({
+                        message: 'Token inválido'
+                    });
+                } else {
+                    return res.status(401).json({
+                        message: 'Error en la verificación del token'
+                    });
+                }
+            }
 
-        return res.json({
-            id: userFound._id,
-            username: userFound.username,
-            email: userFound.email,
-            is_admin: userFound.is_admin
-        })
-    })
+            return res.json({
+                id: user.id,
+                username: user.username,
+                email: user.email,
+                is_admin: user.is_admin
+            });
+        });
+    } catch (error) {
+        // Manejo de errores en caso de excepciones generales
+        return res.status(500).json({ message: 'Error en la verificación del token' });
+    }
 }
 
 export const logout = (req, res) => {
