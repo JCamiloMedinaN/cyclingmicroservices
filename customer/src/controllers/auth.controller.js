@@ -82,7 +82,7 @@ export const login = async (req, res) => {
         createdAt: userFound.createdAt,
         updateAt: userFound.updatedAt,
         is_admin: userFound.is_admin,
-        // token: token,
+        token: token,
         // expiresIn: expiresIn      
       })
     }

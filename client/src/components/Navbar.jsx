@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
-// import { useState } from 'react'
 import Cookies from 'js-cookie'
 import { verifyTokenRequest } from '../api/auth.js'
 
