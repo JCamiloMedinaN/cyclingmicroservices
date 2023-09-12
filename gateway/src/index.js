@@ -3,6 +3,13 @@ import { createProxyMiddleware } from 'http-proxy-middleware'
 
 const app = express()
 
+
+app.use('/', 
+  createProxyMiddleware({
+    target: 'http://localhost:4001/',
+    changeOrigin: true
+}))
+=======
 app.use('/',
   createProxyMiddleware({
     target: 'http://localhost:4001/',
@@ -11,6 +18,7 @@ app.use('/',
       proxyReq.end()
     }
   }))
+
 
 
 app.listen(4000, () => {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { BrowserRouter, Routes, Route, useNavigate, Navigate } from 'react-router-dom'
-import { AuthProvider , useAuth } from './context/AuthContext'
+import { useAuth } from './context/AuthContext'
 
 import RegisterPage from './pages/RegisterPage'
 import LoginPage from './pages/LoginPage'
@@ -17,10 +17,9 @@ import CreateCategoryPage from './pages/CreateCategoryPage'
 
 function App() {
 
-  const { isAdmin } = useAuth
-  
+	const { isAdmin } = useAuth()
+    
   return (
-    <AuthProvider>
       <BrowserRouter>
         <Navbar />
         <Routes>
@@ -32,7 +31,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path='/profile' element={<ProfilePage />} />
 
-            <Route path='/shoppingcart' element={isAdmin ? <ShoppingCartPage /> : <Navigate to='/' />} />
+            <Route path='/shoppingcart' element={<ShoppingCartPage />} />
             <Route path='/createproduct' element={isAdmin ? <CreateProductPage /> : <Navigate to='/' />} />
             <Route path='/createcategory' element={isAdmin ? <CreateCategoryPage /> : <Navigate to='/' />} />
             <Route path='/editproduct' element={isAdmin ? <EditProductPage /> : <Navigate to='/' />} />
@@ -41,7 +40,6 @@ function App() {
           <Route path='*' element={<RedirectToHomePage />} />
         </Routes>
       </BrowserRouter>
-    </AuthProvider>
   )
 }
 
