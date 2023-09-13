@@ -13,14 +13,6 @@ app.use(cors({
 app.use(cookieParser())
 app.use(express.json())
 
-// app.use((req, res, next) => {
-//   console.log('Solicitud recibida en Customer 4001:', req.url)
-//   if (req.is('json')) {
-//     console.log('Datos JSON recibidos:', req.body)
-//   }
-//   next()
-// })
-
 app.use('/api', authRoutes)
 
 export default app

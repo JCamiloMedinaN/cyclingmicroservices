@@ -1,18 +1,21 @@
-// import express from 'express'
-// import cors from 'cors'
-// import cookieParser from 'cookie-parser'
+import express from 'express'
+import cors from 'cors'
+import cookieParser from 'cookie-parser'
 
-// import productsRoutes from './routes/products.routes.js'
-// import categoriesRoutes from './routes/categories.routes.js'
+import productsRoutes from './routes/products.routes.js'
+import categoriesRoutes from './routes/categories.routes.js'
 
-// const app = express()
+const app = express()
 
-// app.use(cors())
+app.use(cors({
+    origin: 'http://localhost:5173',
+    credentials: true
+}))
 
-// app.use(express.json())
-// app.use(cookieParser())
+app.use(cookieParser())
+app.use(express.json())
 
-// app.use('/api', productsRoutes)
-// app.use('/api', categoriesRoutes)
+app.use('/api', categoriesRoutes)
+app.use('/api', productsRoutes)
 
-// export default app
+export default app
