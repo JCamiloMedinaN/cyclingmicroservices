@@ -14,6 +14,7 @@ import Navbar from './components/Navbar'
 import ShoppingCartPage from './pages/ShoppingCartPage'
 import EditProductPage from './pages/EditProductPage'
 import CreateCategoryPage from './pages/CreateCategoryPage'
+import { CategoryProvider } from './context/CategoryContext'
 
 function App() {
 
@@ -33,7 +34,10 @@ function App() {
 
           <Route path='/shoppingcart' element={<ShoppingCartPage />} />
           <Route path='/createproduct' element={isAdmin ? <CreateProductPage /> : <Navigate to='/' />} />
-          <Route path='/createcategory' element={isAdmin ? <CreateCategoryPage /> : <Navigate to='/' />} />
+          <Route
+            path='/createcategory'
+            element={isAdmin ? <CategoryProvider><CreateCategoryPage /></CategoryProvider> : <Navigate to='/' />}
+          />
           <Route path='/editproduct' element={isAdmin ? <EditProductPage /> : <Navigate to='/' />} />
         </Route>
 
