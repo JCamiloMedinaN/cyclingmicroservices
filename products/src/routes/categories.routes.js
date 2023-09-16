@@ -1,6 +1,6 @@
-import { Router } from "express"
-import { authRequired } from "../middlewares/validateToken.js"
-import { getCategories, getCategory, createCategory, updateCategory, deleteCategory } from "../controllers/categories.controller.js"
+import { Router } from 'express'
+import { authRequired } from '../middlewares/validateToken.js'
+import { getCategories, getCategory, createCategory, updateCategory, deleteCategory } from '../controllers/categories.controller.js'
 
 const router = Router()
 

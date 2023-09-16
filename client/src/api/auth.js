@@ -1,8 +1,7 @@
-import axios from './axios'
+import { customer } from './instance'
 
-export const registerRequest = (user) => axios.post(`/register`, user)
-export const loginRequest = (user) => axios.post(`/login`, user)
-export const loginAdminRequest = (user) => axios.post(`/loginadmin`, user)
-export const verifyTokenRequest = () => axios.get('/verify')
-export const logout = () => axios.post('/logout')
-
+export const registerRequest = (user) => customer.post('/register', user)
+export const loginRequest = (user) => customer.post('/login', user)
+export const loginAdminRequest = (user) => customer.post('/loginadmin', user)
+export const verifyTokenRequest = () => customer.get('/verify')
+export const logout = () => customer.post('/logout')

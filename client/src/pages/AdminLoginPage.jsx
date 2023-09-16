@@ -9,11 +9,11 @@ function AdminLoginPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (isAuthenticated && !isAdmin) navigate("/profile");
+    if (isAuthenticated && !isAdmin) navigate('/profile')
   }, [isAuthenticated, isAdmin])
 
   useEffect(() => {
-    if (isAuthenticated && isAdmin) navigate("/createproduct");
+    if (isAuthenticated && isAdmin) navigate('/createproduct')
   }, [isAuthenticated, isAdmin])
 
   const onSubmit = handleSubmit((data) => {
@@ -36,14 +36,14 @@ function AdminLoginPage() {
         <h1 className='text-2xl font-bold'>Admin Login</h1>
         <form onSubmit={onSubmit}>
 
-          <input type="email" {...register('email', { required: true })}
+          <input type='email' {...register('email', { required: true })}
             className='border border-black w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2'
             placeholder='email'
           />
           {errors.email && <p className='text-red-500'>Email requerido</p>}
 
 
-          <input type="password" {...register('password', { required: true })}
+          <input type='password' {...register('password', { required: true })}
             className='border border-black w-full bg-zinc-700 text-white px-4 py-2 rounded-md my-2'
             placeholder='contraseña'
           />
