@@ -1,12 +1,7 @@
-import axios from './axios'
+import { products } from './instance'
 
-export const getCategoriesRequest = () => axios.get('/categories')
-
-export const getCategoryRequest = (id) => axios.get(`/categories/${id}`)
-
-export const createCategoryRequest = (category) => axios.post('/categories', category)
-
-export const updateCategoryRequest = (category) => axios.put(`/categories/${category._id}`, category)
-
-export const deleteCategoryRequest = (id) => axios.delete(`/categories/${id}`)
-
+export const getCategoriesRequest = () => products.get('/categories')
+export const getCategoryRequest = (id) => products.get(`/categories/${id}`)
+export const createCategoryRequest = (category) => products.post('/categories', category)
+export const updateCategoryRequest = (category) => products.put(`/categories/${category._id}`, category)
+export const deleteCategoryRequest = (id) => products.delete(`/categories/${id}`)

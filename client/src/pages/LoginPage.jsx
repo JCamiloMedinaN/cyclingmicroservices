@@ -9,7 +9,7 @@ function LoginPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (isAuthenticated) navigate('/profile');
+    if (isAuthenticated) navigate('/profile')
   }, [isAuthenticated])
 
   const onSubmit = handleSubmit((data) => {
