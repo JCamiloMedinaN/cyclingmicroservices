@@ -4,10 +4,14 @@ import { getProducts, getProduct, createProduct, updateProduct, deleteProduct } 
 
 const router = Router()
 
-router.get('/products', authRequired, getProducts)
-router.get('/products/:id', authRequired, getProduct)
-router.post('/products', authRequired, createProduct)
-router.delete('/products/:id', authRequired, deleteProduct)
-router.put('/products/:id', authRequired, updateProduct)
+router.get('/products', getProducts)
+router.get('/products/:id', getProduct)
+router.post('/products', createProduct)
+router.delete('/products/:id', deleteProduct)
+router.put('/products/:id', updateProduct)
 
-export default router
+// Nueva ruta para obtener productos con paginación y filtros
+router.get('/products/page/:page', getProducts);
+router.get('/products/category/:category', getProducts);
+
+export default router

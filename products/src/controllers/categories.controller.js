@@ -49,7 +49,7 @@ export const getCategory = async (req, res) => {
 }
 
 export const deleteCategory = async (req, res) => {
-  const categoryId = req.params.id
+  const categoryId = req.params.id;
 
   try {
     const deletedCategory = await Category.findByIdAndRemove(categoryId)
@@ -60,6 +60,7 @@ export const deleteCategory = async (req, res) => {
 
     res.json({ message: 'Categoría eliminada exitosamente' })
   } catch (error) {
+    console.error('Error al eliminar la categoría:', error)
     res.status(500).json({ error: 'Ocurrió un error al eliminar la categoría' })
   }
 }

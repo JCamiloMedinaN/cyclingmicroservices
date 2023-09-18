@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 import { TOKEN_SECRET } from '../config.js'
-import User from '../../../customer/src/models/user.model.js'
 
 export const authRequired = (req, res, next) => {
   const { token } = req.cookies
