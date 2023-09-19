@@ -14,32 +14,38 @@ import Navbar from './components/Navbar'
 import ShoppingCartPage from './pages/ShoppingCartPage'
 import EditProductPage from './pages/EditProductPage'
 import CreateCategoryPage from './pages/CreateCategoryPage'
+import ProductDetail from './components/ProductDetail'
 
 function App() {
 
-	const { isAdmin } = useAuth()
-    
+  const { isAdmin } = useAuth()
+
   return (
-      <BrowserRouter>
-        <Navbar />
-        <Routes>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/loginadmin' element={<AdminLoginPage />} />
-          <Route path='/register' element={<RegisterPage />} />
+    <BrowserRouter>
+      <Navbar />
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/login' element={<LoginPage />} />
+        <Route path='/loginadmin' element={<AdminLoginPage />} />
+        <Route path='/register' element={<RegisterPage />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path='/profile' element={<ProfilePage />} />
+        {/* Aqui ruta para ver el producto a detalle, ver como hacer q solo puedan comentar users logueados, pero q cualquiera pueda ver */}
+        <Route path="/product/:productId" element={<ProductDetail />} />
 
-            <Route path='/shoppingcart' element={<ShoppingCartPage />} />
-            <Route path='/createproduct' element={isAdmin ? <CreateProductPage /> : <Navigate to='/' />} />
-            <Route path='/createcategory' element={isAdmin ? <CreateCategoryPage /> : <Navigate to='/' />} />
-            <Route path='/editproduct' element={isAdmin ? <EditProductPage /> : <Navigate to='/' />} />
-          </Route>
 
-          <Route path='*' element={<RedirectToHomePage />} />
-        </Routes>
-      </BrowserRouter>
+        <Route element={<ProtectedRoute />}>
+          <Route path='/profile' element={<ProfilePage />} />
+
+          <Route path='/shoppingcart' element={<ShoppingCartPage />} />
+          <Route path='/createproduct' element={isAdmin ? <CreateProductPage /> : <Navigate to='/' />} />
+          <Route path='/createcategory' element={isAdmin ? <CreateCategoryPage /> : <Navigate to='/' />} />
+          {/* <Route path='/editproduct' element={isAdmin ? <EditProductPage /> : <Navigate to='/' />} /> */}
+          <Route path="/editproduct/:productId" element={<EditProductPage />} />
+        </Route>
+
+        <Route path='*' element={<RedirectToHomePage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 

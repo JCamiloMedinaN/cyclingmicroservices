@@ -9,11 +9,11 @@ function AdminLoginPage() {
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (isAuthenticated && !isAdmin) navigate('/profile')
+    if (isAuthenticated && !isAdmin) navigate('/')
   }, [isAuthenticated, isAdmin])
 
   useEffect(() => {
-    if (isAuthenticated && isAdmin) navigate('/createproduct')
+    if (isAuthenticated && isAdmin) navigate('/')
   }, [isAuthenticated, isAdmin])
 
   const onSubmit = handleSubmit((data) => {

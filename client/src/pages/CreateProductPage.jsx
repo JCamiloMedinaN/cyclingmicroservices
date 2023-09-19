@@ -203,10 +203,11 @@ function CreateProductPage({ onSubmit }) {
                                         Seleccione una categoría
                                     </option>
                                     {categorias.map((cat) => (
-                                        <option key={cat._id} value={cat._id}>{cat.name}</option>
+                                        // <option key={cat._id} value={cat._id}>{cat.name}</option>//almacena la categoria con el ID de la categoria
+                                        <option key={cat.name} value={cat.name}>{cat.name}</option>//almacena la categoria con el nombre de la categoria
                                     ))}
                                 </select>
-                            </div>
+                            </div>  
                             {errorCategoria && <span className='error'>{errorCategoria}</span>}
                         </div>
                         <div className='error'>{errorForm}</div>
@@ -224,6 +225,7 @@ function CreateProductPage({ onSubmit }) {
 }
 
 export default CreateProductPage
+
 
 
 

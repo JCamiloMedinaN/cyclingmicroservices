@@ -2,20 +2,11 @@ import multer from 'multer'
 import cloudinary from '../config2.js'
 import Product from '../models/product.model.js'
 
-// const upload = multer({ dest: 'uploads/' })
 const upload = multer({ dest: 'uploads/' }).single('image')
 
-// export const getProducts = async (req, res) => {
-//   try {
-//     const products = await Product.find();
-//     res.json(products);
-//   } catch (error) {
-//     handleErrors(res, error, 'Error al obtener los productos');
-//   }
-// }
 export const getProducts = async (req, res) => {
   try {
-    const { page, category, search } = req.params;
+    const { page, category, search } = req.query; // Utiliza req.query para acceder a los parámetros de consulta
     const perPage = 9; // Número de productos por página (ajusta según tus necesidades)
 
     // Configura las opciones de búsqueda según la categoría (si está presente)
@@ -114,17 +105,185 @@ export const deleteProduct = async (req, res) => {
 export const updateProduct = async (req, res) => {
   try {
     const productId = req.params.id;
-    const updatedProduct = await Product.findByIdAndUpdate(productId, req.body, { new: true });
+    const updatedProductData = req.body; // Datos del producto enviados en el formulario
+
+    // Verifica si se proporciona una imagen en el formulario
+    if (req.file) {
+      // Sube la nueva imagen a Cloudinary (si es proporcionada)
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: 'Prueba'
+      });
+
+      // Actualiza la URL de la imagen en los datos del producto
+      updatedProductData.image = result.secure_url;
+    }
+
+    // Obtén el producto actual de la base de datos
+    const currentProduct = await Product.findById(productId);
+
+    if (!currentProduct) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+
+    // Verifica si la imagen cambió
+    if (req.file && updatedProductData.image !== currentProduct.image) {
+      // Actualiza el producto con la nueva imagen
+      const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, { new: true });
+
+      if (!updatedProduct) {
+        return res.status(404).json({ message: 'No se pudo actualizar el producto' });
+      }
+
+      return res.json(updatedProduct);
+    }
+
+    // Si la imagen no cambió, simplemente actualiza los otros campos del producto
+    const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, { new: true });
 
     if (!updatedProduct) {
-      return res.status(404).json({ message: 'Producto no encontrado' });
+      return res.status(404).json({ message: 'No se pudo actualizar el producto' });
     }
 
     res.json(updatedProduct);
   } catch (error) {
-    handleErrors(res, error, 'Error al actualizar el producto');
+    // Manejo de errores generales
+    res.status(500).json({ message: 'Error interno del servidor' });
   }
-}
+};
+
+
+
+
+
+// export const updateProduct = async (req, res) => {
+//   try {
+//     const productId = req.params.id;
+//     const updatedProductData = req.body; // Datos del producto enviados en el formulario
+
+//     // Verifica si se proporciona una imagen en el formulario
+//     if (req.file) {
+//       // Sube la nueva imagen a Cloudinary (si es proporcionada)
+//       const result = await cloudinary.uploader.upload(req.file.path, {
+//         folder: 'Prueba'
+//       });
+
+//       // Actualiza la URL de la imagen en los datos del producto
+//       updatedProductData.image = result.secure_url;
+//     }
+
+//     // Actualiza el producto en la base de datos
+//     const updatedProduct = await Product.findByIdAndUpdate(productId, updatedProductData, { new: true });
+
+//     if (!updatedProduct) {
+//       return res.status(404).json({ message: 'Producto no encontrado' });
+//     }
+
+//     res.json(updatedProduct);
+//   } catch (error) {
+//     // Maneja los errores
+//     res.status(500).json({ message: error.message });
+//   }
+// }
+
+// export const updateProduct = async (req, res) => {
+//   try {
+//     const productId = req.params.id;
+//     const updatedProduct = await Product.findByIdAndUpdate(productId, req.body, { new: true });
+
+//     if (!updatedProduct) {
+//       return res.status(404).json({ message: 'Producto no encontrado' });
+//     }
+
+//     res.json(updatedProduct);
+//   } catch (error) {
+//     handleErrors(res, error, 'Error al actualizar el producto');
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+// export const createComment = async (req, res) => {
+//   try {
+//     const productId = req.params.id;
+//     const { author, text } = req.body;
+
+//     // Busca el producto por su ID
+//     const product = await Product.findById(productId);
+
+//     if (!product) {
+//       return res.status(404).json({ message: 'Producto no encontrado' });
+//     }
+
+//     // Crea un nuevo comentario
+//     const comment = {
+//       author,
+//       text,
+//       createdAt: new Date(),
+//     };
+
+//     // Agrega el comentario al producto
+//     product.comments.push(comment);
+
+//     // Guarda el producto actualizado en la base de datos
+//     await product.save();
+
+//     res.json(comment);
+//   } catch (error) {
+//     // Maneja los errores
+//     res.status(500).json({ message: error.message });
+//   }
+// };
+
+// export const createComment = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const { author, text } = req.body;
+
+//     const product = await Product.findById(id);
+
+//     if (!product) {
+//       return res.status(404).json({ message: 'Producto no encontrado' });
+//     }
+
+//     const newComment = {
+//       author,
+//       text,
+//     };
+
+//     product.comments.push(newComment);
+//     await product.save();
+
+//     res.status(201).json({ message: 'Comentario agregado con éxito', comment: newComment });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Error al agregar el comentario' });
+//   }
+// }
+
+// export const getComment = async (req, res) => {
+//   try {
+//     const { id } = req.params;
+//     const product = await Product.findById(id);
+
+//     if (!product) {
+//       return res.status(404).json({ message: 'Producto no encontrado' });
+//     }
+
+//     res.status(200).json(product.comments);
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: 'Error al obtener los comentarios' });
+//   }
+// };
+
 
 
 

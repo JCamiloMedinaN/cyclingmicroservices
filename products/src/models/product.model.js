@@ -33,22 +33,22 @@ const productSchema = new mongoose.Schema({
     min: 0,
     max: 5,
   },
-  comments: [
-    {
-      author: {
-        type: String,
-        required: true,
-      },
-      text: {
-        type: String,
-        required: true,
-      },
-      createdAt: {
-        type: Date,
-        default: Date.now(),
-      },
-    },
-  ],
+  // comments: [
+  //   {
+  //     author: {
+  //       type: String,
+  //       required: true,
+  //     },
+  //     text: {
+  //       type: String,
+  //       required: true,
+  //     },
+  //     createdAt: {
+  //       type: Date,
+  //       default: Date.now(),
+  //     },
+  //   },
+  // ],
   createdAt: {
     type: Date,
     default: Date.now(),

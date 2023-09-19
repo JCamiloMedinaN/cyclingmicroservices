@@ -1,93 +1,3 @@
-// import { useEffect, useState } from 'react';
-// import ProductList from '../components/ProductList';
-// import Axios from 'axios';
-
-// const Home = () => {
-//   const [products, setProducts] = useState([]);
-
-//   useEffect(() => {
-//     // Realiza una solicitud HTTP para obtener la lista de productos
-//     Axios.get('http://localhost:4002/api/products')
-//       .then((response) => {
-//         setProducts(response.data);
-//       })
-//       .catch((error) => {
-//         console.error('Error al obtener productos:', error);
-//       });
-//   }, []);
-
-//   return (
-//     <div>
-//       {/* Agrega filtros y búsqueda aquí */}
-//       <ProductList products={products}/>
-//       {/* Agrega paginación aquí */}
-//     </div>
-//   );
-// };
-
-// export default Home;
-//------------------------------------------------------------------------------------------------------------------
-// import { useEffect, useState } from 'react';
-// import ProductList from '../components/ProductList';
-// import Axios from 'axios';
-
-// const Home = () => {
-//   const [products, setProducts] = useState([]);
-//   const [page, setPage] = useState(1);
-//   const [category, setCategory] = useState('');
-//   const [categories, setCategories] = useState([]); // Estado para almacenar las categorías disponibles
-
-//   useEffect(() => {
-//     // Realiza una solicitud HTTP para obtener la lista de productos con paginación y filtro por categoría
-//     Axios.get(`http://localhost:4002/api/products?page=${page}&category=${category}`,{withCredentials: true})
-//       .then((response) => {
-//         setProducts(response.data);
-//       })
-//       .catch((error) => {
-//         console.error('Error al obtener productos:', error);
-//       });
-//   }, [page, category]);
-
-//   useEffect(() => {
-//     // Realiza una solicitud HTTP para obtener la lista de categorías disponibles
-//     Axios.get('http://localhost:4002/api/categories', {withCredentials: true})
-//       .then((response) => {
-//         setCategories(response.data);
-//       })
-//       .catch((error) => {
-//         console.error('Error al obtener categorías:', error);
-//       });
-//   }, []); // Se ejecuta una vez al cargar el componente
-
-//   return (
-//     <div>
-//       <div>
-//         <label>Selecciona una categoría:</label>
-//         <select
-//           value={category}
-//           onChange={(e) => setCategory(e.target.value)}
-//         >
-//           <option value="">Todas las categorías</option>
-//           {categories.map((cat) => (
-//             <option key={cat._id} value={cat.name}>
-//               {cat.name}
-//             </option>
-//           ))}
-//         </select>
-//       </div>
-//       <ProductList products={products} />
-//       <div>
-//         <button onClick={() => setPage(page - 1)} disabled={page === 1}>
-//           Página anterior
-//         </button>
-//         <button onClick={() => setPage(page + 1)}>Página siguiente</button>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Home;
-//-----------------------------------------------------------------------------------------------------
 import { useEffect, useState } from 'react';
 import ProductList from '../components/ProductList';
 import Axios from 'axios';
@@ -101,7 +11,10 @@ const Home = () => {
 
   useEffect(() => {
     // Realiza una solicitud HTTP para obtener la lista de productos con paginación, filtro por categoría y búsqueda
-    Axios.get(`http://localhost:4002/api/products?page=${page}&category=${category}&search=${searchTerm}`, { withCredentials: true })
+    Axios.get(`http://localhost:4002/api/products`, {
+      params: { page, category, search: searchTerm }, // Utiliza params para enviar los parámetros de consulta
+      withCredentials: true,
+    })
       .then((response) => {
         setProducts(response.data);
       })
@@ -151,7 +64,9 @@ const Home = () => {
           ))}
         </select>
       </div>
+
       <ProductList products={products} />
+
       <div className='my-4'>
         <button onClick={() => setPage(page - 1)} disabled={page === 1} className='mr-4 bg-color-secondary text-color-primary p-2 rounded-md'>
           Página anterior
