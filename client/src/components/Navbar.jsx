@@ -109,9 +109,9 @@ function Navbar() {
 													<li>
 														<Link to='/createcategory' className='text-color-primary hover:bg-gray-800 hover:text-white block rounded-md px-3 py-2 text-base font-medium'>Crear Categoría</Link>
 													</li>
-													{/* <li>
+													<li>
 														<Link to='/editproduct' className='text-color-primary hover:bg-gray-800 hover:text-white block rounded-md px-3 py-2 text-base font-medium'>Editar Producto</Link>
-													</li> */}
+													</li>
 												</>
 											)}
 											<li>
@@ -166,9 +166,9 @@ function Navbar() {
 										<li>
 											<Link to='/createcategory' className='text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium'>Crear Categoría</Link>
 										</li>
-										{/* <li>
+										<li>
 											<Link to='/editproduct' className='text-gray-300 hover:bg-gray-700 hover:text-white block rounded-md px-3 py-2 text-base font-medium'>Editar Producto</Link>
-										</li> */}
+										</li>
 									</>
 								)}
 								<li>

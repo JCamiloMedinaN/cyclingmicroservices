@@ -15,6 +15,7 @@ app.use(express.json())
 
 // Solo en desarrollo
 // app.use((req, res, next) => {
+//   console.log('Tipo de solicitud recibida:', req.method)
 //   console.log('Solicitud recibida en Customer 4001:', req.url)
 //   if (req.is('json')) {
 //     console.log('Datos JSON recibidos:', req.body)
