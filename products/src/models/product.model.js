@@ -18,6 +18,9 @@ const productSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  publicUrl: {
+    type: String,
+  },
   category: {
     type: String,
     required: true,
