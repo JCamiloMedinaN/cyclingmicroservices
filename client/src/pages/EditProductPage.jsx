@@ -1,11 +1,8 @@
-// Añadir los campos que falten
-
 import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Axios from 'axios'
 
 const EditProductPage = () => {
-	const [errorImagen, setErrorImagen] = useState('')
 	const { productId } = useParams()
 	const navigate = useNavigate()
 
@@ -16,6 +13,20 @@ const EditProductPage = () => {
 		stock: 0,
 		image: null,
 	})
+
+	const [categories, setCategories] = useState([]);
+
+	useEffect(() => {
+		Axios.get("http://localhost:4002/api/categories", {
+			withCredentials: true,
+		})
+			.then((response) => {
+				setCategories(response.data);
+			})
+			.catch((error) => {
+				console.error("Error al obtener las categorías:", error);
+			});
+	}, []);
 
 	useEffect(() => {
 		Axios.get(`http://localhost:4002/api/products/${productId}`, {
@@ -49,10 +60,6 @@ const EditProductPage = () => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault()
-		if (!product.image || typeof product.image === 'string') {
-			setErrorImagen('Por favor, seleccione una imagen.')
-			return
-		}
 		try {
 			const formData = new FormData()
 			formData.append('name', product.name)
@@ -60,6 +67,8 @@ const EditProductPage = () => {
 			formData.append('price', product.price)
 			formData.append('stock', product.stock)
 			formData.append('image', product.image)
+			formData.append("category", product.category)
+			console.log(product.category)
 			await Axios.put(`http://localhost:4002/api/products/${productId}`, formData, {
 				withCredentials: true,
 				headers: {
@@ -131,6 +140,26 @@ const EditProductPage = () => {
 						required
 					/>
 				</div>
+				<div className="mb-4">
+					<label htmlFor="category" className="block font-bold">
+						Categoría:
+					</label>
+					<select
+						id="category"
+						name="category"
+						value={product.category}
+						onChange={handleInputChange}
+						className="border border-color-input p-2 rounded-md w-96"
+						required
+					>
+						<option value="">Seleccionar categoría</option>
+						{categories.map((category) => (
+							<option key={category._id} value={category.name}>
+								{category.name}
+							</option>
+						))}
+					</select>
+				</div>
 				<div className='mb-4'>
 					<label htmlFor='image' className='block font-bold'>
 						Imagen:
@@ -164,7 +193,6 @@ const EditProductPage = () => {
 					>
 						Cancelar
 					</button>
-					{errorImagen && ( <span className="text-color-error font-bold text-sm">{errorImagen}</span> )}
 				</div>
 			</form>
 		</div>
