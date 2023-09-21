@@ -82,117 +82,131 @@ const EditProductPage = () => {
 	}
 
 	return (
-		<div className='mx-80 mt-24'>
-			<h1 className='text-3xl font-bold mb-4'>Editar Producto</h1>
+		<div className='mx-80'>
+			<h1 className='text-center font-bold text-lg mt-12'>Editar Producto</h1>
 			<form onSubmit={handleSubmit}>
-				<div className='mb-4'>
-					<label htmlFor='name' className='block font-bold'>
-						Nombre del Producto:
-					</label>
-					<input
-						type='text'
-						id='name'
-						name='name'
-						value={product.name}
-						onChange={handleInputChange}
-						className='border border-color-input p-2 rounded-md w-96'
-						required
-					/>
-				</div>
-				<div className='mb-4'>
-					<label htmlFor='description' className='block font-bold'>
-						Descripción:
-					</label>
-					<textarea
-						id='description'
-						name='description'
-						value={product.description}
-						onChange={handleInputChange}
-						className='border border-color-input p-2 rounded-md w-96 h-32'
-						required
-					/>
-				</div>
-				<div className='mb-4'>
-					<label htmlFor='price' className='block font-bold'>
-						Precio:
-					</label>
-					<input
-						type='number'
-						id='price'
-						name='price'
-						value={product.price}
-						onChange={handleInputChange}
-						className='border border-color-input p-2 rounded-md w-96'
-						required
-					/>
-				</div>
-				<div className='mb-4'>
-					<label htmlFor='stock' className='block font-bold'>
-						Stock:
-					</label>
-					<input
-						type='number'
-						id='stock'
-						name='stock'
-						value={product.stock}
-						onChange={handleInputChange}
-						className='border border-color-input p-2 rounded-md w-96'
-						required
-					/>
-				</div>
-				<div className="mb-4">
-					<label htmlFor="category" className="block font-bold">
-						Categoría:
-					</label>
-					<select
-						id="category"
-						name="category"
-						value={product.category}
-						onChange={handleInputChange}
-						className="border border-color-input p-2 rounded-md w-96"
-						required
-					>
-						<option value="">Seleccionar categoría</option>
-						{categories.map((category) => (
-							<option key={category._id} value={category.name}>
-								{category.name}
-							</option>
-						))}
-					</select>
-				</div>
-				<div className='mb-4'>
-					<label htmlFor='image' className='block font-bold'>
-						Imagen:
-					</label>
-					{product.image && typeof product.image !== 'string' && (
-						<img
-							src={URL.createObjectURL(product.image)}
-							alt='Imagen del producto'
-							className='mb-2 rounded-md w-96'
-						/>
-					)}
-					<input
-						type='file'
-						id='image'
-						name='image'
-						accept='image/*'
-						onChange={handleImageChange}
-						className='border border-color-input p-2 rounded-md w-96'
-					/>
-				</div>
-				<div className='mb-10'>
-					<button
-						type='submit'
-						className='bg-color-secondary w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded mr-5'
-					>
-						Guardar
-					</button>
-					<button
-						onClick={() => navigate(`/product/${productId}`)}
-						className='bg-color-button-delete w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded mr-5'
-					>
-						Cancelar
-					</button>
+				<div className='flex items-center justify-between  mt-24'>
+					<div>
+						{/* image */}
+						<div className='flex flex-col mb-4'>
+							<label htmlFor='image' className='block font-bold'>
+							</label>
+							{product.image && typeof product.image !== 'string' && (
+								<div>
+									<img
+										src={URL.createObjectURL(product.image)}
+										alt='Imagen del producto'
+										className='rounded-md w-96 border'
+									/>
+								</div>
+
+							)}
+
+						</div>
+					</div>
+					<div>
+						<div className='mb-4'>
+							<label htmlFor='name' className='block font-bold'>
+								Nombre del Producto:
+							</label>
+							<input
+								type='text'
+								id='name'
+								name='name'
+								value={product.name}
+								onChange={handleInputChange}
+								className='border border-color-input p-2 rounded-md w-96'
+								required
+							/>
+						</div>
+						<div className='mb-4'>
+							<label htmlFor='description' className='block font-bold'>
+								Descripción:
+							</label>
+							<textarea
+								id='description'
+								name='description'
+								value={product.description}
+								onChange={handleInputChange}
+								className='border border-color-input p-2 rounded-md w-96 h-32'
+								required
+							/>
+						</div>
+						<div className='mb-4'>
+							<label htmlFor='price' className='block font-bold'>
+								Precio:
+							</label>
+							<input
+								type='number'
+								id='price'
+								name='price'
+								value={product.price}
+								onChange={handleInputChange}
+								className='border border-color-input p-2 rounded-md w-96'
+								required
+							/>
+						</div>
+						<div className='mb-4'>
+							<label htmlFor='stock' className='block font-bold'>
+								Stock:
+							</label>
+							<input
+								type='number'
+								id='stock'
+								name='stock'
+								value={product.stock}
+								onChange={handleInputChange}
+								className='border border-color-input p-2 rounded-md w-96'
+								required
+							/>
+						</div>
+						<div className="mb-4">
+							<label htmlFor="category" className="block font-bold">
+								Categoría:
+							</label>
+							<select
+								id="category"
+								name="category"
+								value={product.category}
+								onChange={handleInputChange}
+								className="bg-color-secondary text-color-primary p-2 rounded-md my-2"
+								required
+							>
+								<option value="">Seleccionar categoría</option>
+								{categories.map((category) => (
+									<option key={category._id} value={category.name}>
+										{category.name}
+									</option>
+								))}
+							</select>
+						</div>
+						{/* continuidad de IMG */}
+						<div className='mb-5'>
+							<input
+								type='file'
+								id='image'
+								name='image'
+								accept='image/*'
+								onChange={handleImageChange}
+								className='border border-color-input p-2 rounded-md w-96'
+							/>
+						</div>
+						<div className='mb-10'>
+							<button
+								type='submit'
+								className='bg-color-secondary w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded mr-5'
+							>
+								Guardar
+							</button>
+							<button
+								onClick={() => navigate(`/product/${productId}`)}
+								className='bg-color-button-delete w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded mr-5'
+							>
+								Cancelar
+							</button>
+						</div>
+
+					</div>
 				</div>
 			</form>
 		</div>

@@ -118,14 +118,14 @@ function CreateCategoryPage() {
   return (
     <div>
       <div className='flex mt-24 items-center justify-center'>
-        <div className='flex flex-col items-center'>
+        <div className='flex flex-col items-center w-96 sm:w-full'>
           <form onSubmit={handleSubmit}>
             <input
               type='text'
               placeholder='Nueva Categoria'
               value={newCategory}
               onChange={handleCategoryChange}
-              className='border border-black w-96 px-4 py-2 rounded-md my-2'
+              className='border border-black w-64 sm:w-96 px-4 py-2 rounded-md my-2'
               autoFocus
             />
             {error && <div style={{ color: 'red' }}>{error}</div>}

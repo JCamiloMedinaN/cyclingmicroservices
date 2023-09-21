@@ -14,7 +14,8 @@ export default {
       'color-error': 'rgb(190,0,10)',
       'color-button-create':'rgb(3,201,136)',
       'color-button-delete':'rgb(250,42,42)',
-      'color-input':'rgb(68,64,60)'
+      'color-input':'rgb(68,64,60)',
+      'color-navbarhover':'rgb(0,49,84)',
     }
   },
   plugins: [],

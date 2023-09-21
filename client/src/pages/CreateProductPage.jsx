@@ -5,6 +5,7 @@ function CreateProductPage({ onSubmit }) {
     const [nombre, setNombre] = useState('')
     const [descripcion, setDescripcion] = useState('')
     const [imagen, setImagen] = useState(null)
+    const [imageUrl, setImageUrl] = useState('')
     const [price, setPrice] = useState('')
     const [stock, setStock] = useState('')
     const [categoria, setCategoria] = useState('')
@@ -42,10 +43,24 @@ function CreateProductPage({ onSubmit }) {
         setDescripcion(event.target.value)
     }
 
+    // const handleImagenChange = (event) => {
+    //     setImagen(event.target.files[0])
+    //     setErrorImagen(event.target.files.length === 0 ? 'Por favor, seleccione una imagen' : '')
+    // }
     const handleImagenChange = (event) => {
-        setImagen(event.target.files[0])
-        setErrorImagen(event.target.files.length === 0 ? 'Por favor, seleccione una imagen' : '')
-    }
+        const selectedImage = event.target.files[0];
+        setImagen(selectedImage);
+
+        if (selectedImage) {
+            const imageURL = URL.createObjectURL(selectedImage);
+            setImageUrl(imageURL);
+        } else {
+            setImageUrl('');
+        }
+
+        setErrorImagen(event.target.files.length === 0 ? 'Por favor, seleccione una imagen' : '');
+    };
+
 
     const handlePriceChange = (event) => {
         setPrice(event.target.value)
@@ -123,22 +138,20 @@ function CreateProductPage({ onSubmit }) {
         <div className='flex-nowrap items-center justify-center mx-96'>
             <h1 className='text-center font-bold text-lg mt-12'>Crear Producto</h1>
             {successMessage && (
-                <div className='success-message'>
+                <div className='success-message text-center bg-color-button-create text-color-primary'>
                     {successMessage}
                 </div>
             )}
             <form onSubmit={handleSubmit}>
                 <div className='flex items-center justify-between  mt-24'>
                     <div>
-                        {/* <label htmlFor='imagen'>Imagen:</label> */}
-                        <input
-                            type='file'
-                            id='imagen'
-                            accept='image/*'
-                            onChange={handleImagenChange}
-                            className='border border-black w-96 h-96 px-4 py-2 rounded-md my-2'
-                        />
-                        {errorImagen && <span className='error'>{errorImagen}</span>}
+                        {imageUrl && (
+                            <img
+                                src={imageUrl}
+                                alt='Imagen seleccionada'
+                                className='rounded-md w-96 border'
+                            />
+                        )}
                     </div>
                     <div>
                         <div>
@@ -188,6 +201,17 @@ function CreateProductPage({ onSubmit }) {
                             />
                             {errorStock && <span className='error'>{errorStock}</span>}
                         </div>
+                        <div>
+                            {/* <label htmlFor='imagen'>Imagen:</label> */}
+                            <input
+                                type='file'
+                                id='imagen'
+                                accept='image/*'
+                                onChange={handleImagenChange}
+                                className='border border-black w-96 px-4 py-2 rounded-md my-2'
+                            />
+                            {errorImagen && <span className='error'>{errorImagen}</span>}
+                        </div>
                         <div className='flex items-center justify-between'>
                             <div>
                                 <label htmlFor='categoria'>Categoría</label>
@@ -207,7 +231,7 @@ function CreateProductPage({ onSubmit }) {
                                         <option key={cat.name} value={cat.name}>{cat.name}</option>//almacena la categoria con el nombre de la categoria
                                     ))}
                                 </select>
-                            </div>  
+                            </div>
                             {errorCategoria && <span className='error'>{errorCategoria}</span>}
                         </div>
                         <div className='error'>{errorForm}</div>
