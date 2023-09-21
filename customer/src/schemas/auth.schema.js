@@ -14,7 +14,13 @@ export const registerSchema = z.object({
         required_error: 'Contraseña es requerida',
     }).min(6, {
         message: 'La contraseña debe tener al menos 6 caracteres'
-    }),
+    }).refine((password) => {
+        // Utiliza una expresión regular para verificar si hay al menos una mayúscula y un carácter especial
+        return /[A-Z]/.test(password) && /[!@#$%^&*()_+[\]{};':"\\|,.<>/?]+/.test(password)
+    }, {
+        message: 'La contraseña debe contener al menos una mayúscula y un carácter especial'
+    }
+    ),
 })
 
 //TODO: In password, validate numbers, letters and characters
