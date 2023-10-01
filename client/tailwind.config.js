@@ -16,7 +16,25 @@ export default {
       'color-button-delete':'rgb(250,42,42)',
       'color-input':'rgb(68,64,60)',
       'color-navbarhover':'rgb(0,49,84)',
-    }
+      'color-slate-300':'rgb(203,213,225)',
+      'color-neutral-400':'rgb(163,163,163)',
+    },
+    screens: {
+      'sm': { 'min': '300px', 'max': '767px' },
+      // => @media (min-width: 640px and max-width: 767px) { ... }
+
+      'md': { 'min': '768px', 'max': '1023px' },
+      // => @media (min-width: 768px and max-width: 1023px) { ... }
+
+      'lg': { 'min': '1024px', 'max': '1279px' },
+      // => @media (min-width: 1024px and max-width: 1279px) { ... }
+
+      'xl': { 'min': '1280px', 'max': '1535px' },
+      // => @media (min-width: 1280px and max-width: 1535px) { ... }
+
+      '2xl': { 'min': '1536px' },
+      // => @media (min-width: 1536px) { ... }
+  },
   },
   plugins: [],
 }

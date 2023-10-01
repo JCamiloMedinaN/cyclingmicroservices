@@ -19,8 +19,8 @@ function LoginPage() {
   if (loading) return <h1>loading...</h1>
 
   return (
-    <div className=' flex h-[calc(100vh-100px)] items-center justify-center'>
-      <div className='border border-black max-w-md w-full p-10 rounded-md'>
+    <div className=' flex h-[calc(100vh-100px)] items-center justify-center sm:px-2'>
+      <div className='border border-black max-w-md sm:w-7/12  p-10 rounded-md'>
         {
           signinErrors.map((error, i) => (
             <div className='bg-color-error p-0.5 my-2 text-color-primary text-center rounded-md' key={i}>

@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 import { BrowserRouter, Routes, Route, useNavigate, Navigate } from 'react-router-dom'
 import { useAuth } from './context/AuthContext'
 
@@ -16,8 +17,9 @@ import EditProductPage from './pages/EditProductPage'
 import CreateCategoryPage from './pages/CreateCategoryPage'
 import ProductDetail from './components/ProductDetail'
 
-function App() {
+import ChatBot from './components/ChatBot'
 
+function App() {
   const { isAdmin } = useAuth()
 
   return (
@@ -36,7 +38,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
           <Route path='/profile' element={<ProfilePage />} />
 
-          <Route path='/shoppingcart' element={<ShoppingCartPage />} />
+          <Route path='/shoppingcart' element={<ShoppingCartPage/>} />
           <Route path='/createproduct' element={isAdmin ? <CreateProductPage /> : <Navigate to='/' />} />
           <Route path='/createcategory' element={isAdmin ? <CreateCategoryPage /> : <Navigate to='/' />} />
           {/* <Route path='/editproduct' element={isAdmin ? <EditProductPage /> : <Navigate to='/' />} /> */}
@@ -45,6 +47,7 @@ function App() {
 
         <Route path='*' element={<RedirectToHomePage />} />
       </Routes>
+      <ChatBot />
     </BrowserRouter>
   )
 }

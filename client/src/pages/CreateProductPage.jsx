@@ -39,38 +39,91 @@ function CreateProductPage({ onSubmit }) {
         setErrorNombre(event.target.value.length < 4 ? 'El nombre debe tener al menos 4 letras' : '')
     }
 
+    // const handleDescripcionChange = (event) => {
+    //     setDescripcion(event.target.value)
+    // }
     const handleDescripcionChange = (event) => {
-        setDescripcion(event.target.value)
+        const description = event.target.value;
+        setDescripcion(description);
+
+        // Contar las palabras en la descripción
+        const wordCount = description.split(' ').length;
+
+        // Establecer el límite de palabras
+        const wordLimit = 160;
+
+        // Calcular la cantidad de palabras restantes
+        const wordsRemaining = wordLimit - wordCount;
+
+        // Actualizar el estado de error si se excede el límite
+        if (wordsRemaining < 0) {
+            setErrorDescripcion(`Se excedió el límite de palabras. ${Math.abs(wordsRemaining)} palabras demasiadas.`);
+        } else {
+            setErrorDescripcion('');
+        }
     }
 
-    // const handleImagenChange = (event) => {
-    //     setImagen(event.target.files[0])
-    //     setErrorImagen(event.target.files.length === 0 ? 'Por favor, seleccione una imagen' : '')
-    // }
     const handleImagenChange = (event) => {
         const selectedImage = event.target.files[0];
-        setImagen(selectedImage);
 
-        if (selectedImage) {
-            const imageURL = URL.createObjectURL(selectedImage);
-            setImageUrl(imageURL);
-        } else {
+        if (!selectedImage) {
+            setImagen(null);
             setImageUrl('');
+            setErrorImagen('Por favor, seleccione una imagen');
+            return;
         }
 
-        setErrorImagen(event.target.files.length === 0 ? 'Por favor, seleccione una imagen' : '');
+        // Obtener la extensión del archivo
+        const fileExtension = selectedImage.name.split('.').pop().toLowerCase();
+
+        // Validar que el archivo sea una imagen (por extensión)
+        const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+
+        if (!allowedExtensions.includes('.' + fileExtension)) {
+            setImagen(null);
+            setImageUrl('');
+            setErrorImagen('Por favor, seleccione una imagen válida (jpg, jpeg o png)');
+            return;
+        }
+
+        setImagen(selectedImage);
+
+        const imageURL = URL.createObjectURL(selectedImage);
+        setImageUrl(imageURL);
+        setErrorImagen('');
     };
 
-
     const handlePriceChange = (event) => {
-        setPrice(event.target.value)
-        setErrorPrice(event.target.value === '' ? 'Por favor, ingrese el precio' : '')
-    }
+        const newPrice = event.target.value;
+
+        // Expresión regular para validar números con al menos dos dígitos
+        const priceRegex = /^[0-9]{3,}$/;
+
+        // Verificar si el nuevo precio coincide con la expresión regular
+        if (!priceRegex.test(newPrice)) {
+            setErrorPrice('El precio debe ser un número con al menos 3 dígitos');
+        } else {
+            setErrorPrice('');
+        }
+
+        setPrice(newPrice);
+    };
 
     const handleStockChange = (event) => {
-        setStock(event.target.value)
-        setErrorStock(event.target.value === '' ? 'Por favor, ingrese el stock' : '')
-    }
+        const newStock = event.target.value;
+
+        // Expresión regular para validar números enteros mayores que 0
+        const stockRegex = /^[1-9][0-9]*$/;
+
+        // Verificar si el nuevo stock coincide con la expresión regular
+        if (!stockRegex.test(newStock)) {
+            setErrorStock('El stock debe ser un número entero mayor que 0');
+        } else {
+            setErrorStock('');
+        }
+
+        setStock(newStock);
+    };
 
     const handleCategoriaChange = (event) => {
         setCategoria(event.target.value)
@@ -138,7 +191,7 @@ function CreateProductPage({ onSubmit }) {
         <div className='flex-nowrap items-center justify-center mx-96'>
             <h1 className='text-center font-bold text-lg mt-12'>Crear Producto</h1>
             {successMessage && (
-                <div className='success-message text-center bg-color-button-create text-color-primary'>
+                <div className='success-message  text-center bg-color-button-create text-color-primary p-1 mt-2 rounded-md'>
                     {successMessage}
                 </div>
             )}
@@ -154,52 +207,68 @@ function CreateProductPage({ onSubmit }) {
                         )}
                     </div>
                     <div>
-                        <div>
+                        <div className='flex-col'>
                             {/* <label htmlFor='nombre'>Nombre:</label> */}
-                            <input
-                                type='text'
-                                id='nombre'
-                                placeholder='Nombre del Producto'
-                                value={nombre}
-                                onChange={handleNombreChange}
-                                className='border border-black w-96 px-4 py-2 rounded-md my-2'
-                            />
-                            {errorNombre && <span className='error'>{errorNombre}</span>}
+                            <div>
+                                <input
+                                    type='text'
+                                    id='nombre'
+                                    placeholder='Nombre del Producto'
+                                    value={nombre}
+                                    onChange={handleNombreChange}
+                                    className='border border-black w-96 px-4 py-2 rounded-md my-2'
+                                />
+                            </div>
+                            <div>
+                                {errorNombre && <span className='error bg-color-button-delete text-color-primary p-1 rounded-md'>{errorNombre}</span>}
+                            </div>
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             {/* <label htmlFor='price'>Precio:</label> */}
-                            <input
-                                type='text'
-                                id='price'
-                                placeholder='Precio'
-                                value={price}
-                                onChange={handlePriceChange}
-                                className='border border-black w-96 px-4 py-2 rounded-md my-2'
-                            />
-                            {errorPrice && <span className='error'>{errorPrice}</span>}
+                            <div>
+                                <input
+                                    type='text'
+                                    id='price'
+                                    placeholder='Precio'
+                                    value={price}
+                                    onChange={handlePriceChange}
+                                    className='border border-black w-96 px-4 py-2 rounded-md my-2'
+                                />
+                            </div>
+                            <div>
+                                {errorPrice && <span className='error bg-color-button-delete text-color-primary p-1 rounded-md'>{errorPrice}</span>}
+                            </div>
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             {/* <label htmlFor='descripcion'>Descripción:</label> */}
-                            <textarea
-                                id='descripcion'
-                                placeholder='Descripción'
-                                value={descripcion}
-                                onChange={handleDescripcionChange}
-                                className='border border-black w-96 px-4 py-2 rounded-md my-2'
-                            />
-                            {errorDescripcion && <span className='error'>{errorDescripcion}</span>}
+                            <div>
+                                <textarea
+                                    id='descripcion'
+                                    placeholder='Descripción'
+                                    value={descripcion}
+                                    onChange={handleDescripcionChange}
+                                    className='border border-black w-96 px-4 py-2 rounded-md my-2'
+                                />
+                            </div>
+                            <div>
+                                {errorDescripcion && <span className='error bg-color-button-delete text-color-primary p-1 rounded-md'>{errorDescripcion}</span>}
+                            </div>
                         </div>
-                        <div>
+                        <div className='flex-col'>
                             {/* <label htmlFor='stock'>Stock:</label> */}
-                            <input
-                                type='text'
-                                id='stock'
-                                placeholder='Stock Disponible'
-                                value={stock}
-                                onChange={handleStockChange}
-                                className='border border-black w-96 px-4 py-2 rounded-md my-2'
-                            />
-                            {errorStock && <span className='error'>{errorStock}</span>}
+                            <div>
+                                <input
+                                    type='text'
+                                    id='stock'
+                                    placeholder='Stock Disponible'
+                                    value={stock}
+                                    onChange={handleStockChange}
+                                    className='border border-black w-96 px-4 py-2 rounded-md my-2'
+                                />
+                            </div>
+                            <div>
+                                {errorStock && <span className='error bg-color-button-delete text-color-primary p-1 rounded-md'>{errorStock}</span>}
+                            </div>
                         </div>
                         <div>
                             {/* <label htmlFor='imagen'>Imagen:</label> */}
@@ -234,9 +303,9 @@ function CreateProductPage({ onSubmit }) {
                             </div>
                             {errorCategoria && <span className='error'>{errorCategoria}</span>}
                         </div>
-                        <div className='error'>{errorForm}</div>
+                        <div className='error text-color-error p-1 rounded-md'>{errorForm}</div>
                         <button type='submit' disabled={isLoading}
-                            className='bg-color-button-create w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded mt-4'
+                            className='bg-color-button-create w-40 text-color-primary font-bold py-2 px-4 rounded mt-4'
                         >
                             {isLoading ? 'Creando...' : 'Crear Producto'}
                         </button>
@@ -249,11 +318,3 @@ function CreateProductPage({ onSubmit }) {
 }
 
 export default CreateProductPage
-
-
-
-
-
-
-
-

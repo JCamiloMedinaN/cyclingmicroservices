@@ -1,9 +1,12 @@
-function ShoppingCartPage() {
+
+const ShoppingCartPage = () => {
     return (
         <div>
-            <h1>Shopping Cart</h1>
+            <h1>Carrito de Compras</h1>
+            
         </div>
-    )
-}
+    );
+};
 
-export default ShoppingCartPage
+export default ShoppingCartPage;
+
