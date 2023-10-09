@@ -18,7 +18,7 @@ function Chat() {
 
     const sendMessage = async () => {
         try {
-            const response = await axios.post('http://localhost:4003/api/chat', { user_message: userMessage });
+            const response = await axios.post('http://localhost:4003/api/chat',{ user_message: userMessage });
             setAssistantMessage(response.data.assistant_message);
             setUserMessage('');
         } catch (error) {
@@ -35,8 +35,8 @@ function Chat() {
                 {chatVisible && (
                     <div className="chat-content " style={{ maxHeight: '300px', overflowY: 'auto' }}>
                         {/* Aplicar un máximo de altura y desbordamiento vertical */}
-                        <div className="user-message">{userMessage}</div>
-                        <div className="assistant-message">{assistantMessage}</div>
+                        <div className="user-message bg-color-primary pl-1">{userMessage}</div>
+                        <div className="assistant-message bg-color-primary p-2">{assistantMessage}</div>
                     </div>
                 )}
             </div>

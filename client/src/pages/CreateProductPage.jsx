@@ -77,12 +77,12 @@ function CreateProductPage({ onSubmit }) {
         const fileExtension = selectedImage.name.split('.').pop().toLowerCase();
 
         // Validar que el archivo sea una imagen (por extensión)
-        const allowedExtensions = ['.jpg', '.jpeg', '.png'];
+        const allowedExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
 
         if (!allowedExtensions.includes('.' + fileExtension)) {
             setImagen(null);
             setImageUrl('');
-            setErrorImagen('Por favor, seleccione una imagen válida (jpg, jpeg o png)');
+            setErrorImagen('Por favor, seleccione una imagen válida (jpg, jpeg, png o webp)');
             return;
         }
 
@@ -97,11 +97,11 @@ function CreateProductPage({ onSubmit }) {
         const newPrice = event.target.value;
 
         // Expresión regular para validar números con al menos dos dígitos
-        const priceRegex = /^[0-9]{3,}$/;
+        const priceRegex = /^[0-9]{0,4}$/;
 
         // Verificar si el nuevo precio coincide con la expresión regular
         if (!priceRegex.test(newPrice)) {
-            setErrorPrice('El precio debe ser un número con al menos 3 dígitos');
+            setErrorPrice('El precio debe ser mayor que 0 y de al menos 4 dígitos');
         } else {
             setErrorPrice('');
         }
@@ -270,16 +270,20 @@ function CreateProductPage({ onSubmit }) {
                                 {errorStock && <span className='error bg-color-button-delete text-color-primary p-1 rounded-md'>{errorStock}</span>}
                             </div>
                         </div>
-                        <div>
-                            {/* <label htmlFor='imagen'>Imagen:</label> */}
-                            <input
-                                type='file'
-                                id='imagen'
-                                accept='image/*'
-                                onChange={handleImagenChange}
-                                className='border border-black w-96 px-4 py-2 rounded-md my-2'
-                            />
-                            {errorImagen && <span className='error'>{errorImagen}</span>}
+                        <div className='flex-col'>
+                            <div>
+                                {/* <label htmlFor='imagen'>Imagen:</label> */}
+                                <input
+                                    type='file'
+                                    id='imagen'
+                                    accept='image/*'
+                                    onChange={handleImagenChange}
+                                    className='border border-black w-96 px-4 py-2 rounded-md my-2'
+                                />
+                            </div>
+                            <div>
+                                {errorImagen && <span className='error bg-color-button-delete text-color-primary p-1 rounded-md'>{errorImagen}</span>}
+                            </div>
                         </div>
                         <div className='flex items-center justify-between'>
                             <div>

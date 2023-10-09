@@ -1,13 +1,13 @@
 import { Link } from 'react-router-dom'
 
 
-const ProductList = ({ products}) => {
+const ProductList = ({ products }) => {
     return (
         <div className='grid grid-cols-3 sm:grid-cols-1 md:grid-cols-2 gap-4 w-full'>
             {products.map((product) => (
                 <div key={product._id} className='w-full max-w-xs mx-auto'>
                     <Link to={`/product/${product._id}`} className='block'>
-                        <div className='relative w-full  rounded-lg bg-white shadow-2xl'>
+                        <div className='relative w-full  rounded-lg bg-white border border-color-neutral-400 shadow-2xl'>
                             <img
                                 src={product.image}
                                 alt={product.name}
@@ -20,7 +20,7 @@ const ProductList = ({ products}) => {
                                 </div>
                                 <div className='flex justify-center items-center mt-2'>
                                     <button
-                                        className='flex items-center rounded-md bg-color-secondary px-5 py-2.5 text-center font-medium text-color-primary hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300
+                                        className='flex items-center rounded-md bg-color-secondary px-5 py-1.5 text-center font-medium text-color-primary hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300
                                         w-40'
                                     >
                                         <svg
