@@ -6,15 +6,34 @@ import { useAuth } from '../context/AuthContext';
 const ProductDetail = () => {
   const { productId } = useParams();
   const [product, setProduct] = useState(null);
+  const [comment, setComment] = useState('');
+  const [comments, setComments] = useState([]);
   const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [carrito, setCarrito] = useState([]);
 
-  useEffect(() => {
+  const handleAddComment = () => {
+    if (comment.trim() === '') {
+      return;
+    }
 
+    Axios.post(`http://localhost:4002/api/products/${productId}/comment`, { comment }, {
+      withCredentials: true,
+    })
+      .then((response) => {
+        console.log(response.data.message);
+        // Actualizar la lista de comentarios después de agregar uno nuevo
+        setComments([...comments, comment]);
+        setComment(''); // Limpiar el campo de comentario después de agregarlo
+      })
+      .catch((error) => {
+        console.error('Error al agregar el comentario:', error);
+      });
+  };
+
+  useEffect(() => {
     const carritoData = JSON.parse(localStorage.getItem('carrito')) || [];
     setCarrito(carritoData);
-
     Axios.get(`http://localhost:4002/api/products/${productId}`, {
       withCredentials: true,
     })
@@ -24,8 +43,18 @@ const ProductDetail = () => {
       .catch((error) => {
         console.error('Error al obtener detalles del producto:', error);
       });
-  }, [productId]);
 
+    // Obtener comentarios del producto
+    Axios.get(`http://localhost:4002/api/products/${productId}/comments`, {
+      withCredentials: true,
+    })
+      .then((response) => {
+        setComments(response.data);
+      })
+      .catch((error) => {
+        console.error('Error al obtener comentarios:', error);
+      });
+  }, [productId]);
 
   const handleDelete = () => {
     Axios.delete(`http://localhost:4002/api/products/${productId}`, {
@@ -39,25 +68,15 @@ const ProductDetail = () => {
       });
   };
 
-  // const enviarCarritoAComponenteHijo = () => {
-  //     // Aquí pasamos el estado carrito a ComponenteHijo
-  //     // Utilizamos un estado local para actualizar las props
-  //     setCarrito([...carrito]);
-  //   };
-
   const actualizarCarritoEnLocalStorage = (carritoData) => {
     localStorage.setItem('carrito', JSON.stringify(carritoData));
   };
 
   const agregarAlCarrito = (item) => {
-
     item.cantidad = 1;
     item.valortotal = item.price * item.cantidad;
-
     const updatedCarrito = [...carrito, item];
-
     setCarrito(updatedCarrito);
-
     actualizarCarritoEnLocalStorage(updatedCarrito);
   };
 
@@ -66,8 +85,8 @@ const ProductDetail = () => {
   }
 
   return (
-    <div className='flex-nowrap items-center justify-center  mt-14 sm:mx-8 md:mx-16 lg:mx-48 xl:mx-52 2xl:mx-56'>
-      <div className='flex  sm:flex-wrap justify-center w-full'>
+    <div className='flex-nowrap items-center justify-center mt-14 sm:mx-8 md:mx-16 lg:mx-48 xl:mx-52 2xl:mx-56'>
+      <div className='flex sm:flex-wrap justify-center w-full'>
         <div className='w-full md:w-6/6 lg:w-1/2'>
           <img src={product.image} alt={product.name} className='h-80 w-full object-contain rounded-md' />
         </div>
@@ -108,23 +127,54 @@ const ProductDetail = () => {
             Agregar al Carrito
           </button>
 
-          {isAdmin && (
-            <div className='flex mt-5'>
-              <button
-                onClick={() => navigate(`/editproduct/${productId}`)}
-                className="bg-color-secondary w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded mr-4 text-sm sm:text-base lg:text-lg xl:text-xl"
-              >
-                Editar
-              </button>
+          <div className='flex mt-5'>
+            {isAdmin && (
+              <>
+                <button
+                  onClick={() => navigate(`/editproduct/${productId}`)}
+                  className="bg-color-secondary w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded mr-4 text-sm sm:text-base lg:text-lg xl:text-xl"
+                >
+                  Editar
+                </button>
 
-              <button
-                onClick={handleDelete}
-                className="bg-color-button-delete w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded text-sm sm:text-base lg:text-lg xl:text-xl"
-              >
-                Eliminar
-              </button>
-            </div>
-          )}
+                <button
+                  onClick={handleDelete}
+                  className="bg-color-button-delete w-32 md:w-40 text-color-primary font-bold py-2 px-4 rounded text-sm sm:text-base lg:text-lg xl:text-xl"
+                >
+                  Eliminar
+                </button>
+              </>
+            )}
+          </div>
+
+          <div className='flex flex-col mt-5'>
+            <label htmlFor='comment' className='text-base font-semibold mb-1'>
+              Agregar Comentario:
+            </label>
+            <textarea
+              id='comment'
+              name='comment'
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              rows='4'
+              className='resize-none border rounded-md p-2'
+            ></textarea>
+            <button
+              onClick={handleAddComment}
+              className='bg-color-secondary mt-2 px-4 py-2 rounded text-color-primary hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-blue-300'
+            >
+              Agregar Comentario
+            </button>
+          </div>
+
+          <div className='mt-5'>
+            <h2 className='text-lg font-semibold mb-2'>Comentarios:</h2>
+            <ul>
+              {comments.slice(0).reverse().map((comment, index) => (
+                <li key={index} className='mb-2'>{comment}</li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>

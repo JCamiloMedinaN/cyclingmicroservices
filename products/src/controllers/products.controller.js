@@ -181,3 +181,34 @@ export const realizarCompra = async (req, res) => {
     res.status(500).json({ message: 'Error al realizar la compra', error: error.message });
   }
 };
+
+export const createComment = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const { comment } = req.body;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+    product.comments.push(comment);
+    await product.save();
+    res.json({ message: 'Comentario agregado exitosamente' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error al agregar el comentario', error: error.message });
+  }
+};
+
+export const getCommentsByProduct = async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: 'Producto no encontrado' });
+    }
+    const comments = product.comments;
+    res.json(comments);
+  } catch (error) {
+    res.status(500).json({ message: 'Error al obtener los comentarios', error: error.message });
+  }
+};
