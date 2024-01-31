@@ -3,6 +3,7 @@ import cloudinary from '../config2.js'
 import Product from '../models/product.model.js'
 import fs from 'fs'
 import path from 'path'
+import OpenAI from 'openai';
 
 const upload = multer({ dest: 'uploads/' }).single('image')
 
@@ -182,32 +183,64 @@ export const realizarCompra = async (req, res) => {
   }
 };
 
+
+const openai = new OpenAI({
+  apiKey: process.env['OPENAI_API_KEY'],
+});
+
+
 export const createComment = async (req, res) => {
   try {
     const productId = req.params.id;
-    const { comment } = req.body;
-
+    const { comment, author } = req.body;
+    const contextInfo = {
+      productId,
+      comment,
+      author,
+      possibleScores: ['Excelente', 'Sobresaliente', 'Aceptable', 'Insuficiente', 'Deficiente'],
+    };
+    const response = await getScoreFromChatGPT(contextInfo, comment);
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: 'Producto no encontrado' });
     }
-    product.comments.push(comment);
+    const score = response.data.score;
+    product.comments.push({ text: comment, author, score });
     await product.save();
-    res.json({ message: 'Comentario agregado exitosamente' });
+    res.json({ message: 'Comentario agregado exitosamente', score });
   } catch (error) {
     res.status(500).json({ message: 'Error al agregar el comentario', error: error.message });
   }
 };
 
-export const getCommentsByProduct = async (req, res) => {
+const getScoreFromChatGPT = async (contextInfo, comment) => {
+  try {
+  const chatCompletion = await openai.chat.completions.create({
+    messages: [{ role: 'user', content: `Devuelve Excelente, Sobresaliente, Aceptable, Insuficiente o Deficiente según tu interpretación de este comentario: ${comment}`}],
+    model: 'gpt-3.5-turbo',
+  });
+    const score = chatCompletion.choices[0].message.content
+    console.log(chatCompletion.choices[0].message.content)
+    return { data: { score } };
+  } catch (error) {
+    console.error('Error en la solicitud a ChatGPT:', error);
+    throw error;
+  }
+};
+
+export const getAllComments = async (req, res) => {
   try {
     const productId = req.params.id;
     const product = await Product.findById(productId);
     if (!product) {
       return res.status(404).json({ message: 'Producto no encontrado' });
     }
-    const comments = product.comments;
-    res.json(comments);
+    const commentsWithAuthorAndScore = product.comments.map((comment) => ({
+      text: comment.text,
+      author: comment.author,
+      score: comment.score
+    }));
+    res.json(commentsWithAuthorAndScore);
   } catch (error) {
     res.status(500).json({ message: 'Error al obtener los comentarios', error: error.message });
   }
