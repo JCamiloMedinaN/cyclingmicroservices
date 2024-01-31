@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { useAuth } from '../context/AuthContext';
 
 const ShoppingCartPage = () => {
   const [carrito, setCarrito] = useState([]);
+  const { user } = useAuth();
 
   useEffect(() => {
     const carritoData = JSON.parse(localStorage.getItem("carrito")) || [];
@@ -67,6 +70,10 @@ const ShoppingCartPage = () => {
 
   const handleRealizarCompra = async () => {
     try {
+      if (carrito.length === 0) {
+        alert("El carrito está vacío. Añade productos antes de realizar la compra");
+        return;
+      }
       const simplifiedProducts = carrito.map((producto) => ({
         productId: producto._id,
         quantity: producto.cantidad,
@@ -78,6 +85,43 @@ const ShoppingCartPage = () => {
       alert(response.data.message);
       if (response.data.message === "Compra realizada exitosamente") {
         limpiarCarrito();
+        const pdf = new jsPDF();
+        const fontSize = 12;
+        pdf.setFontSize(fontSize);
+        pdf.text("Cycling - Factura de compra", 14, 20);
+        const currentDate = new Date().toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: 'long',
+          year: 'numeric'
+        });
+        const currentTime = new Date().toLocaleTimeString('es-ES', {
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: true
+        });
+        pdf.setFontSize(fontSize - 1);
+        pdf.text(`Fecha: ${currentDate}`, 14, 30);
+        pdf.text(`Hora: ${currentTime}`, 14, 40);
+        pdf.text(`Usuario: ${user.username}`, 14, 50);
+        pdf.text(`Email: ${user.email}`, 14, 60);
+        const tableStartY = 68;
+        pdf.setFontSize(fontSize);
+        const columns = ["Producto", "Cantidad", "Precio Unitario", "Total"];
+        const data = carrito.map((producto) => [
+          producto.name,
+          producto.cantidad,
+          `$${producto.price}`,
+          `$${producto.valortotal}`,
+        ]);
+        pdf.autoTable({
+          head: [columns],
+          body: data,
+          startY: tableStartY,
+        });
+        pdf.setFontSize(fontSize - 2);
+        pdf.text(`Valor Total: $${sumarTotal(carrito)}`, 144, pdf.autoTable.previous.finalY + 10);
+        pdf.save("resumen_compra.pdf");
       }
     } catch (error) {
       console.error("Error al realizar la compra", error.response.data.message);
@@ -143,6 +187,7 @@ const ShoppingCartPage = () => {
         >
           Limpiar Carrito
         </button>
+
       </div>
 
     </div>

@@ -1,4 +1,6 @@
+import mongoose from 'mongoose';
 import Category from '../models/category.model.js'
+import Product from '../models/product.model.js'
 
 export const getCategories = async (req, res) => {
   try {
@@ -48,23 +50,6 @@ export const getCategory = async (req, res) => {
 
 }
 
-export const deleteCategory = async (req, res) => {
-  const categoryId = req.params.id;
-
-  try {
-    const deletedCategory = await Category.findByIdAndRemove(categoryId)
-
-    if (!deletedCategory) {
-      return res.status(404).json({ error: 'No se encontró la categoría' })
-    }
-
-    res.json({ message: 'Categoría eliminada exitosamente' })
-  } catch (error) {
-    console.error('Error al eliminar la categoría:', error)
-    res.status(500).json({ error: 'Ocurrió un error al eliminar la categoría' })
-  }
-}
-
 export const updateCategory = async (req, res) => {
   const { newName } = req.body
   const categoryId = req.params.id
@@ -89,3 +74,28 @@ export const updateCategory = async (req, res) => {
     res.status(500).json({ error: 'Ocurrió un error al actualizar la categoría' })
   }
 }
+
+export const deleteCategory = async (req, res) => {
+  const categoryName = req.params.id; // Cambiado a categoryName
+
+  try {
+    // Utiliza la lógica del controlador getProductCountByCategory
+    const count = await Product.countDocuments({ category: categoryName });
+
+    if (count > 0) {
+      return res.status(400).json({ error: 'Products associated' });
+    }
+
+    // Si no hay productos asociados, eliminar la categoría
+    const deletedCategory = await Category.findOneAndDelete({ name: categoryName }); // Cambiado a findOneAndDelete
+
+    if (!deletedCategory) {
+      return res.status(404).json({ error: 'No se encontró la categoría' });
+    }
+
+    res.json({ message: 'Categoría eliminada exitosamente' });
+  } catch (error) {
+    console.error('Error al eliminar la categoría:', error);
+    res.status(500).json({ error: 'Ocurrió un error al eliminar la categoría' });
+  }
+};

@@ -85,36 +85,25 @@ function CreateCategoryPage() {
     }
   }
 
-  const handleDelete = async (categoryId) => {
-    // Aquí debes verificar si hay productos en la categoría
-    // Puedes hacer una solicitud al servidor para verificar esto
-
+  const handleDelete = async (cosa) => {
     try {
-      const response = await axios.get(
-        `http://localhost:4002/api/categories/${categoryId}`,
-        { withCredentials: true }
-      );
-
-      // Si hay productos en la categoría, no permitir la eliminación
-      if (response.data.length > 0) {
-        setError('No se puede eliminar la categoría si hay productos en ella.');
-        return;
-      }
-
-      // Si no hay productos, permitir la eliminación
-      await axios.delete(`http://localhost:4002/api/categories/${categoryId}`, {
+      const response = await axios.delete(`http://localhost:4002/api/categories/${cosa}`, {
         withCredentials: true
       });
-
+      console.log(response)
       const fetchedCategories = await fetchCategories();
       setCategories(fetchedCategories);
       setError('');
     } catch (error) {
-      console.error('Error deleting category:', error);
-      setError('Ocurrió un error al eliminar la categoría.');
+      if (error.response && error.response.data && error.response.data.error === 'Products associated') {
+        setError('No se puede eliminar la categoría si hay productos en ella.');
+      } else {
+        console.error('Error deleting category:', error);
+        setError('Ocurrió un error al eliminar la categoría.');
+      }
     }
-  }
-
+  };
+  
   return (
     <div>
       <div className='flex mt-24 items-center justify-center'>
@@ -175,14 +164,14 @@ function CreateCategoryPage() {
                   <div className='flex justify-between w-full items-center px-2'>
                     <div className='mr-32'>{category.name}</div>
                     <div className='flex items-center'>
-                      <button
+                      {/* <button
                         onClick={() => setEditingCategory(category._id)}
                         className='bg-color-third text-color-primary rounded-md p-2 w-32 md:w-40 font-bold mx-2'
                       >
                         Editar
-                      </button>
+                      </button> */}
                       <button
-                        onClick={() => handleDelete(category._id)}
+                        onClick={() => handleDelete(category.name)}
                         className='bg-color-button-delete text-color-primary rounded-md p-2 w-32 md:w-40 font-bold mx-2'
                       >
                         Eliminar

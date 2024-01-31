@@ -1,5 +1,22 @@
 import mongoose from 'mongoose'
 
+const commentSchema = new mongoose.Schema({
+  text: {
+    type: String,
+    required: true,
+  },
+  author: {
+    type: String,
+    required: true,
+  },
+  score: {
+    type: String,
+    required: true,
+  },
+}, {
+  timestamps: true
+});
+
 const productSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -44,11 +61,7 @@ const productSchema = new mongoose.Schema({
     type: Date,
     default: Date.now(),
   },
-  comments: [
-    {
-      type: String,
-    },
-  ],
+  comments: [commentSchema],
 }, {
   timestamps: true
 })

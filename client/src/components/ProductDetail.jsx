@@ -8,29 +8,61 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [comment, setComment] = useState('');
   const [comments, setComments] = useState([]);
-  const { isAdmin } = useAuth();
   const navigate = useNavigate();
   const [carrito, setCarrito] = useState([]);
-
+  const { user, isAdmin } = useAuth();
+  
   const handleAddComment = () => {
-    if (comment.trim() === '') {
+    if (!comment) {
+      alert('Por favor, completa el comentario.');
       return;
     }
-
-    Axios.post(`http://localhost:4002/api/products/${productId}/comment`, { comment }, {
-      withCredentials: true,
-    })
-      .then((response) => {
-        console.log(response.data.message);
-        // Actualizar la lista de comentarios después de agregar uno nuevo
-        setComments([...comments, comment]);
-        setComment(''); // Limpiar el campo de comentario después de agregarlo
+    Axios.post(
+      `http://localhost:4002/api/products/${productId}/comment`,
+      {
+        comment,
+        author: user.username,
+      },
+      {
+        withCredentials: true,
+      }
+    )
+      .then(() => {
+        setComment('');
+        setTimeout(() => {
+          Axios.get(`http://localhost:4002/api/products/${productId}/comments`, {
+            withCredentials: true,
+          })
+            .then((response) => {
+              setComments(response.data);
+            })
+            .catch((error) => {
+              console.error('Error al obtener comentarios:', error);
+            });
+        }, 1000);
       })
       .catch((error) => {
         console.error('Error al agregar el comentario:', error);
       });
   };
-
+  
+  const getEmotionFromScore = (score) => {
+    const lowercaseScore = score.toLowerCase();
+    if (lowercaseScore.includes('excelente')) {
+      return 'Euforia';
+    } else if (lowercaseScore.includes('sobresaliente')) {
+      return 'Satisfacción';
+    } else if (lowercaseScore.includes('aceptable')) {
+      return 'Aprobación';
+    } else if (lowercaseScore.includes('insuficiente')) {
+      return 'Frustración';
+    } else if (lowercaseScore.includes('deficiente')) {
+      return 'Desilusión';
+    } else {
+      return 'No clasificado';
+    }
+  };  
+    
   useEffect(() => {
     const carritoData = JSON.parse(localStorage.getItem('carrito')) || [];
     setCarrito(carritoData);
@@ -170,11 +202,17 @@ const ProductDetail = () => {
           <div className='mt-5'>
             <h2 className='text-lg font-semibold mb-2'>Comentarios:</h2>
             <ul>
-              {comments.slice(0).reverse().map((comment, index) => (
-                <li key={index} className='mb-2'>{comment}</li>
-              ))}
+            {comments.slice(0).reverse().map((comment, index) => (
+              <li key={index} className='mb-2'>
+                <p><strong>Author:</strong> {comment.author}</p>
+                <p><strong>Comentario:</strong> {comment.text}</p>
+                <p><strong>Score:</strong> {comment.score}</p>
+                <p><strong>Emoción:</strong> {getEmotionFromScore(comment.score)}</p>
+              </li>
+            ))}
             </ul>
           </div>
+
         </div>
       </div>
     </div>

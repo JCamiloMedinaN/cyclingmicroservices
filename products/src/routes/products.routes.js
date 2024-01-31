@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { authRequired } from '../middlewares/validateToken.js'
 import { getProducts, getProduct, createProduct, updateProduct, deleteProduct, realizarCompra } from '../controllers/products.controller.js'
-import { createComment, getCommentsByProduct } from '../controllers/products.controller.js';
+import { createComment, getAllComments } from '../controllers/products.controller.js';
 import axios from 'axios'
 
 const router = Router()
@@ -17,7 +17,7 @@ router.delete('/products/:id', deleteProduct)
 router.post('/realizar-compra', realizarCompra);
 
 router.post('/products/:id/comment', createComment);
-router.get('/products/:id/comments', getCommentsByProduct);
+router.get('/products/:id/comments', getAllComments);
 
 export async function getUserModel() {
   try {
