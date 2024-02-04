@@ -169,7 +169,7 @@ export const realizarCompra = async (req, res) => {
     for (const { productId, quantity } of products) {
       const product = await Product.findById(productId);
       if (!product) {
-        return res.status(404).json({ message: `Producto con ID ${productId} no encontrado` });
+        return res.status(404).json({ message: `Producto con ID ${productId} no encontrado`});
       }
       if (product.stock < quantity) {
         return res.status(400).json({ message: `Stock insuficiente para ${product.name}` });
@@ -215,18 +215,54 @@ export const createComment = async (req, res) => {
 
 const getScoreFromChatGPT = async (contextInfo, comment) => {
   try {
-  const chatCompletion = await openai.chat.completions.create({
-    messages: [{ role: 'user', content: `Devuelve Excelente, Sobresaliente, Aceptable, Insuficiente o Deficiente según tu interpretación de este comentario: ${comment}`}],
-    model: 'gpt-3.5-turbo',
-  });
-    const score = chatCompletion.choices[0].message.content
-    console.log(chatCompletion.choices[0].message.content)
-    return { data: { score } };
+    const chatCompletion = await openai.chat.completions.create({
+      messages: [{ role: 'user', content: `Devuelve Excelente, Sobresaliente, Aceptable, Insuficiente o Deficiente según tu interpretación de este comentario: ${comment}`}],
+      model: 'gpt-3.5-turbo',
+    });
+
+    const rawScore = chatCompletion.choices[0].message.content;
+    const formattedScore = extractFormattedScore(rawScore);
+
+    console.log(formattedScore);
+    return { data: { score: formattedScore } };
   } catch (error) {
     console.error('Error en la solicitud a ChatGPT:', error);
     throw error;
   }
 };
+
+const extractFormattedScore = (rawScore) => {
+  // Ejemplo muy básico basado en palabras clave en la respuesta
+  if (rawScore.includes('Excelente')) {
+    return 'Excelente';
+  } else if (rawScore.includes('Sobresaliente')) {
+    return 'Sobresaliente';
+  } else if (rawScore.includes('Aceptable')) {
+    return 'Aceptable';
+  } else if (rawScore.includes('Insuficiente')) {
+    return 'Insuficiente';
+  } else if (rawScore.includes('Deficiente')) {
+    return 'Deficiente';
+  } else {
+    // Manejar otros casos según sea necesario.
+    return 'No clasificado';
+  }
+};
+
+// const getScoreFromChatGPT = async (contextInfo, comment) => {
+//   try {
+//   const chatCompletion = await openai.chat.completions.create({
+//     messages: [{ role: 'user', content: Devuelve Excelente, Sobresaliente, Aceptable, Insuficiente o Deficiente según tu interpretación de este comentario: ${comment}}],
+//     model: 'gpt-3.5-turbo',
+//   });
+//     const score = chatCompletion.choices[0].message.content
+//     console.log(chatCompletion.choices[0].message.content)
+//     return { data: { score } };
+//   } catch (error) {
+//     console.error('Error en la solicitud a ChatGPT:', error);
+//     throw error;
+//   }
+// };
 
 export const getAllComments = async (req, res) => {
   try {
@@ -242,6 +278,6 @@ export const getAllComments = async (req, res) => {
     }));
     res.json(commentsWithAuthorAndScore);
   } catch (error) {
-    res.status(500).json({ message: 'Error al obtener los comentarios', error: error.message });
-  }
+    res.status(500).json({ message: 'Error al obtener los comentarios', error: error.message });
+  }
 };
