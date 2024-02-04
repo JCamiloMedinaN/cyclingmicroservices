@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import Axios from 'axios';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
@@ -12,6 +12,27 @@ const ProductDetail = () => {
   const [carrito, setCarrito] = useState([]);
   const { user, isAdmin } = useAuth();
 
+  const [commentCount, setCommentCount] = useState({
+    excelente: 0,
+    aceptable: 0,
+    insuficiente: 0,
+    deficiente: 0,
+    'no clasificado': 0,
+  });
+
+  const incrementCommentCount = useCallback((score) => {
+    const lowercaseScore = score.toLowerCase();
+    const normalizedScore = Object.keys(commentCount).find((key) =>
+      key.toLowerCase() === lowercaseScore
+    );
+    if (normalizedScore) {
+      setCommentCount((prevCount) => ({
+        ...prevCount,
+        [normalizedScore]: prevCount[normalizedScore] + 1,
+      }));
+    }
+  }, [commentCount]);
+  
   const handleAddComment = () => {
     if (!comment) {
       alert('Por favor, completa el comentario.');
@@ -50,10 +71,8 @@ const ProductDetail = () => {
     const lowercaseScore = score.toLowerCase();
     if (lowercaseScore.includes('excelente')) {
       return 'Euforia';
-    } else if (lowercaseScore.includes('sobresaliente')) {
-      return 'Satisfacción';
     } else if (lowercaseScore.includes('aceptable')) {
-      return 'Aprobación';
+      return 'Satisfacción';
     } else if (lowercaseScore.includes('insuficiente')) {
       return 'Frustración';
     } else if (lowercaseScore.includes('deficiente')) {
@@ -75,18 +94,32 @@ const ProductDetail = () => {
       .catch((error) => {
         console.error('Error al obtener detalles del producto:', error);
       });
-
-    // Obtener comentarios del producto
     Axios.get(`http://localhost:4002/api/products/${productId}/comments`, {
       withCredentials: true,
     })
       .then((response) => {
         setComments(response.data);
+        setCommentCount({
+          excelente: 0,
+          aceptable: 0,
+          insuficiente: 0,
+          deficiente: 0,
+          'no clasificado': 0,
+        });
+        response.data.forEach((comment) => {
+          const lowercaseScore = comment.score.toLowerCase();
+          const normalizedScore = Object.keys(commentCount).find((key) =>
+            key.toLowerCase() === lowercaseScore
+          );
+          if (normalizedScore) {
+            incrementCommentCount(lowercaseScore);
+          }
+        });
       })
       .catch((error) => {
         console.error('Error al obtener comentarios:', error);
       });
-  }, [productId]);
+  }, [productId, commentCount, incrementCommentCount]);
 
   const handleDelete = () => {
     Axios.delete(`http://localhost:4002/api/products/${productId}`, {
@@ -115,6 +148,8 @@ const ProductDetail = () => {
   if (!product) {
     return <div className="text-center mt-16">Cargando...</div>;
   }
+
+  const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
   return (
     <div className='flex-nowrap items-center justify-center mt-14 sm:mx-8 md:mx-16 lg:mx-48 xl:mx-52 2xl:mx-56'>
@@ -182,9 +217,6 @@ const ProductDetail = () => {
       </div>
       <div className='flex flex-col sm:flex-wrap justify-center w-full'>
         <div className='flex flex-col mt-5 w-5/6 ml-4 lg:w-1/2 sm:mt-4'>
-          {/* <label htmlFor='comment' className='text-base font-semibold mb-1'>
-              Agregar Comentario:
-            </label> */}
           <textarea
             id='comment'
             name='comment'
@@ -204,13 +236,22 @@ const ProductDetail = () => {
 
         <div className='mt-5 mb-16 w-5/6 ml-4 lg:w-1/2 sm:mt-4'>
           <h2 className='font-bold text-base sm:text-lg lg:text-xl xl:text-xl 2xl:text-xl mb-5'>Comentarios</h2>
+
+          <div className='mb-3'>
+            {Object.entries(commentCount)
+              .sort(([, countA], [, countB]) => countB - countA)
+              .filter(([, count]) => count > 0)
+              .map(([score, count]) => (
+                <span className="border rounded-md py-1 px-1.5 inline-block text-color-primary bg-color-third mr-1 mb-1" key={score}>
+                  <strong>Score {capitalize(score)}:</strong> {count}{' '}
+                  {score.toLowerCase() !== 'no clasificado' && `- ${getEmotionFromScore(score)}`}
+                </span>
+            ))}
+          </div>
+
           <ul>
             {comments.slice(0).reverse().map((comment, index) => (
               <li key={index} className='mb-3'>
-                {/* <p><strong>Author:</strong> {comment.author}</p>
-                <p><strong>Comentario:</strong> {comment.text}</p>
-                <p><strong>Score:</strong> {comment.score}</p>
-                <p><strong>Emoción:</strong> {getEmotionFromScore(comment.score)}</p> */}
                 <p><strong>{comment.author}</strong> </p>
                 <p>{comment.text}</p>
                 <p className='border rounded-md py-1 px-1.5 inline-block text-color-primary bg-color-third mr-1 mb-1'>Score: {comment.score}</p>
